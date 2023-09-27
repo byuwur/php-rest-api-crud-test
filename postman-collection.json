@@ -1,0 +1,314 @@
+{
+    "info": {
+      "_postman_id": "tu_id_de_postman",
+      "name": "API CRUD Endpoints",
+      "description": "Colección de endpoints para la API CRUD",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Usuarios",
+        "item": [
+          {
+            "name": "Crear Usuario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"username\":\"nuevo_usuario\",\"password\":\"contraseña123\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/users/create.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "users",
+                  "create.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Editar Usuario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"user_ID\":1,\"username\":\"nuevo_nombre_de_usuario\",\"password\":\"nueva_contraseña\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/users/edit.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "users",
+                  "edit.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Eliminar Usuario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"user_ID\":1}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/users/delete.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "users",
+                  "delete.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Obtener Usuarios",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/users/read.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "users",
+                  "read.php"
+                ]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Entradas",
+        "item": [
+          {
+            "name": "Crear Entrada",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"users_ID\":1,\"title\":\"Título de la nueva entrada\",\"content\":\"Contenido de la nueva entrada.\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/entries/create.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "entries",
+                  "create.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Editar Entrada",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"entry_ID\":1,\"title\":\"Título editado de la entrada\",\"content\":\"Contenido editado de la entrada.\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/entries/edit.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "entries",
+                  "edit.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Eliminar Entrada",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"entry_ID\":1}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/entries/delete.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "entries",
+                  "delete.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Obtener Entradas",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/entries/read.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "entries",
+                  "read.php"
+                ]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Comentarios",
+        "item": [
+          {
+            "name": "Crear Comentario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"users_ID\":1,\"entries_ID\":1,\"comment\":\"Este es un nuevo comentario.\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/comments/create.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "comments",
+                  "create.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Editar Comentario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"comment_ID\":1,\"comment\":\"Este es el comentario editado.\"}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/comments/edit.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "comments",
+                  "edit.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Eliminar Comentario",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\"comment_ID\":1}"
+              },
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/comments/delete.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "comments",
+                  "delete.php"
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Obtener Comentarios",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost/php-rest-api-crud-test/app/comments/read.php",
+                "protocol": "http",
+                "host": [
+                  "localhost"
+                ],
+                "path": [
+                  "php-rest-api-crud-test",
+                  "app",
+                  "comments",
+                  "read.php"
+                ]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }
+  

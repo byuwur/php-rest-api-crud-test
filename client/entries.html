@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Entradas</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+			<a class="navbar-brand" href="#">Mi Blogger Casero</a>
+			<button
+				class="navbar-toggler"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarNav"
+				aria-controls="navbarNav"
+				aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item active">
+						<a class="nav-link" href="users.html">Usuarios</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="entries.html">Entradas</a>
+					</li>
+				</ul>
+			</div>
+			<div class="navbar-nav ml-auto">
+				<span class="navbar-text px-3" id="usernameText">Hola, Usuario</span>
+				<button id="logoutButton" class="btn btn-danger">Cerrar Sesión</button>
+			</div>
+		</nav>
+
+		<div class="container mt-5">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<h1>Entradas</h1>
+					<button id="createEntryButton" class="btn btn-primary" onclick="createEntry()">Crear Entrada</button>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Usuario</th>
+								<th>ID</th>
+								<th>Entrada</th>
+								<th>Fecha</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody id="entryList"></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			function loadEntries() {
+				$.ajax({
+					type: "GET",
+					url: "../app/entries/read.php",
+					dataType: "json",
+					success: function (response) {
+						if (response.status === 200) {
+							const entries = response.data;
+							if (entries.length === 0) {
+								$("#entryList").html('<tr><td colspan="5">No hay entradas disponibles.</td></tr>');
+							} else {
+								const entryList = $("#entryList");
+								entryList.empty();
+								const uid = sessionStorage.getItem("uid");
+								entries.forEach((entry) => {
+									const entryID = entry.ID;
+									const content = entry.ENTRY;
+									const date = entry.TIMESTAMP;
+									const isOwner = entry.users_ID == uid;
+									const actions = isOwner
+										? `<a class="btn btn-info" href="edit_entry.html?id=${entryID}">Editar</a>
+                                       <button class="btn btn-danger" onclick="deleteEntry(${entryID})">Eliminar</button>`
+										: "";
+									const userID = entry.users_ID;
+
+									const row = `
+                                    <tr>
+                                        <td>${userID}</td>
+                                        <td>${entryID}</td>
+                                        <td>${content}</td>
+                                        <td>${date}</td>
+                                        <td><a class="btn btn-success" href="view_entry.html?id=${entryID}">Ver</a> ${actions}</td>
+                                    </tr>
+                                `;
+									entryList.append(row);
+
+									/*$.ajax({
+										type: "GET",
+										url: `../app/users/read.php?id=${userID}`,
+										dataType: "json",
+										success: function (userResponse) {
+											if (userResponse.status === 200) {
+												const username = userResponse.data[0].USERNAME;
+												const rowToUpdate = entryList.find(`tr:has(td:contains('${userID}'))`);
+												rowToUpdate.find("td:first").text(username);
+											}
+										},
+										error: function () {
+											// Handle error fetching username
+										}
+									});*/
+								});
+							}
+						} else {
+							$("#entryList").html('<tr><td colspan="5">Error al cargar entradas.</td></tr>');
+						}
+					},
+					error: function () {
+						$("#entryList").html('<tr><td colspan="5">Error de conexión al servidor.</td></tr>');
+					}
+				});
+			}
+
+			function deleteEntry(entryID) {
+				if (confirm("¿Estás seguro de eliminar esta entrada?")) {
+					$.ajax({
+						type: "POST",
+						url: "../app/entries/delete.php",
+						data: { id: entryID },
+						dataType: "json",
+						success: function (response) {
+							if (response.status === 200) {
+								loadEntries();
+							} else {
+								alert("Error al eliminar la entrada.");
+							}
+						},
+						error: function () {
+							alert("Error de conexión al servidor.");
+						}
+					});
+				}
+			}
+
+			function createEntry() {
+				window.location.href = "create_entry.html";
+			}
+
+			function logout() {
+				sessionStorage.removeItem("uid");
+				window.location.href = "index.html";
+			}
+
+			$(document).ready(function () {
+				const uid = sessionStorage.getItem("uid");
+				if (!uid) {
+					window.location.href = "index.html";
+				} else {
+					loadEntries();
+					$.ajax({
+						type: "GET",
+						url: `../app/users/read.php?id=${uid}`,
+						dataType: "json",
+						success: function (userResponse) {
+							if (userResponse.status === 200) {
+								const username = userResponse.data[0].USERNAME;
+								$("#usernameText").text(`Hola, ${username}`);
+							}
+						},
+						error: function () {
+							// Handle error fetching username
+						}
+					});
+				}
+				$("#logoutButton").click(logout);
+			});
+		</script>
+	</body>
+</html>

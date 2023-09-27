@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Usuarios</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+			<a class="navbar-brand" href="#">Mi Blogger Casero</a>
+			<button
+				class="navbar-toggler"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarNav"
+				aria-controls="navbarNav"
+				aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item active">
+						<a class="nav-link" href="users.html">Usuarios</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="entries.html">Entradas</a>
+					</li>
+				</ul>
+			</div>
+			<div class="navbar-nav ml-auto">
+				<span class="navbar-text px-3" id="usernameText">Hola, Usuario</span>
+				<button id="logoutButton" class="btn btn-danger">Cerrar Sesión</button>
+			</div>
+		</nav>
+
+		<div class="container mt-5">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<h1>Usuarios</h1>
+					<button id="createUserButton" class="btn btn-primary">Crear Usuario</button>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Nombre de Usuario</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody id="userList"></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			function loadUsers() {
+				$.ajax({
+					type: "GET",
+					url: "../app/users/read.php",
+					dataType: "json",
+					success: function (response) {
+						if (response.status === 200) {
+							const users = response.data;
+							if (users.length === 0) {
+								$("#userList").html('<tr><td colspan="4">No hay usuarios disponibles.</td></tr>');
+							} else {
+								const userList = $("#userList");
+								userList.empty();
+								const uid = sessionStorage.getItem("uid");
+								users.forEach((user) => {
+									const userID = user.ID;
+									const username = user.USERNAME;
+									const isOwner = userID == uid;
+									const actions = isOwner
+										? `<a class="btn btn-info" href="edit_user.html?id=${userID}">Editar</a>
+                                       <button class="btn btn-danger" onclick="deleteUser(${userID})">Eliminar</button>`
+										: "";
+									const row = `
+                                    <tr>
+                                        <td>${userID}</td>
+                                        <td>${username}</td>
+                                        <td>${actions}</td>
+                                    </tr>
+                                `;
+									userList.append(row);
+								});
+							}
+						} else {
+							$("#userList").html('<tr><td colspan="4">Error al cargar usuarios.</td></tr>');
+						}
+					},
+					error: function () {
+						$("#userList").html('<tr><td colspan="4">Error de conexión al servidor.</td></tr>');
+					}
+				});
+			}
+
+			function deleteUser(userID) {
+				if (confirm("¿Estás seguro de eliminar este usuario?")) {
+					$.ajax({
+						type: "POST",
+						url: "../app/users/delete.php",
+						data: { id: userID },
+						dataType: "json",
+						success: function (response) {
+							if (response.status === 200) {
+								logout();
+							} else {
+								alert("Error al eliminar el usuario.");
+							}
+						},
+						error: function () {
+							alert("Error de conexión al servidor.");
+						}
+					});
+				}
+			}
+
+			function logout() {
+				sessionStorage.removeItem("uid");
+				window.location.href = "index.html";
+			}
+
+			$(document).ready(function () {
+				const uid = sessionStorage.getItem("uid");
+				if (!uid) {
+					window.location.href = "index.html";
+				} else {
+					loadUsers();
+					$.ajax({
+						type: "GET",
+						url: `../app/users/read.php?id=${uid}`,
+						dataType: "json",
+						success: function (userResponse) {
+							if (userResponse.status === 200) {
+								const username = userResponse.data[0].USERNAME;
+								$("#usernameText").text(`Hola, ${username}`);
+							}
+						},
+						error: function () {
+							// Handle error fetching username
+						}
+					});
+				}
+				$("#logoutButton").click(logout);
+				$("#createUserButton").click(function () {
+					window.location.href = "create_user.html";
+				});
+			});
+		</script>
+	</body>
+</html>
